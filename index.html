@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecionando...</title>
+</head>
+
+<body>
+
+<script>
+(function () {
+
+    const WEBHOOK = "https://n8n.antero.cloud/webhook/9cb1efdc-5da6-401f-bcb9-12ba3eff38ae";
+
+    const DESTINO = "https://chat.whatsapp.com/KocSLGNWIth08Sgfhw3pCP";
+
+    const urlParams = new URLSearchParams(window.location.search);
+
+    // Dados que queremos capturar
+    const dados = new URLSearchParams();
+
+    dados.set("evento", "click_whatsapp");
+    dados.set("timestamp", new Date().toISOString());
+
+    dados.set("url_original", window.location.href);
+
+    dados.set("referrer", document.referrer || "");
+
+    dados.set("fbclid", urlParams.get("fbclid") || "");
+
+    dados.set("utm_source", urlParams.get("utm_source") || "");
+    dados.set("utm_medium", urlParams.get("utm_medium") || "");
+    dados.set("utm_campaign", urlParams.get("utm_campaign") || "");
+    dados.set("utm_content", urlParams.get("utm_content") || "");
+    dados.set("utm_term", urlParams.get("utm_term") || "");
+
+    dados.set("campaign_id", urlParams.get("campaign_id") || "");
+    dados.set("campaign_name", urlParams.get("campaign_name") || "");
+
+    dados.set("adset_id", urlParams.get("adset_id") || "");
+    dados.set("adset_name", urlParams.get("adset_name") || "");
+
+    dados.set("ad_id", urlParams.get("ad_id") || "");
+    dados.set("ad_name", urlParams.get("ad_name") || "");
+
+    dados.set("placement", urlParams.get("placement") || "");
+    dados.set("site_source_name", urlParams.get("site_source_name") || "");
+
+    dados.set("user_agent", navigator.userAgent);
+    dados.set("language", navigator.language);
+
+    try {
+        dados.set(
+            "timezone",
+            Intl.DateTimeFormat().resolvedOptions().timeZone
+        );
+    } catch(e) {}
+
+    dados.set("screen_width", screen.width);
+    dados.set("screen_height", screen.height);
+
+    // ID único desse clique
+    dados.set(
+        "click_id",
+        Date.now() + "-" + Math.random().toString(36).substring(2, 12)
+    );
+
+
+    /*
+     * Dispara uma requisição GET para o webhook.
+     *
+     * Usar Image evita problemas de CORS
+     * porque o navegador interpreta como carregamento
+     * de recurso externo.
+     */
+
+    const tracker = new Image();
+
+    tracker.src =
+        WEBHOOK +
+        "?" +
+        dados.toString();
+
+
+    /*
+     * Pequeníssimo intervalo para dar oportunidade
+     * ao navegador de iniciar a requisição.
+     *
+     * 120ms é praticamente imperceptível.
+     */
+
+    setTimeout(function () {
+
+        window.location.replace(DESTINO);
+
+    }, 120);
+
+})();
+</script>
+
+</body>
+</html>
